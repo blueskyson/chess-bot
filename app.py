@@ -34,6 +34,8 @@ app = Flask(__name__)
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
+http_port = int(os.environ.get("PORT", 8000))
+
 if channel_secret is None:
     print('Specify LINE_CHANNEL_SECRET as environment variable.')
     sys.exit(1)
@@ -78,8 +80,8 @@ if __name__ == "__main__":
     arg_parser = ArgumentParser(
         usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
     )
-    arg_parser.add_argument('-p', '--port', type=int, default=os.environ['PORT'], help='port')
-    arg_parser.add_argument('-d', '--debug', default=False, help='debug')
-    options = arg_parser.parse_args()
+    # arg_parser.add_argument('-p', '--port', type=int, default=http_port, help='port')
+    # arg_parser.add_argument('-d', '--debug', default=False, help='debug')
+    # options = arg_parser.parse_args()
 
-    app.run(debug=options.debug, port=options.port)
+    app.run(host='0.0.0.0', port=http_port)
