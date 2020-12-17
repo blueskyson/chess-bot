@@ -1,2 +1,7 @@
 line-bot-sdk
 flask
+line-bot-sdk==1.14.0
+flask==1.0.2
+python-dotenv==0.10.3
+transitions==0.6.9
+pygraphviz==1.5
