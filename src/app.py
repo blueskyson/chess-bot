@@ -26,11 +26,16 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from fsm import TocMachine
 from utils import send_text_message, send_image_message
 import texts
+
+from PIL import Image
+import random
 app = Flask(__name__)
 
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
+domain = 'https://7a11edb09d53.ngrok.io'
+
 
 if channel_secret is None:
     print('Specify LINE_CHANNEL_SECRET as environment variable.')
@@ -43,23 +48,23 @@ line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
 machine = TocMachine(
-    states=["user", "playing"],
+    states=["user", "play"],
     transitions=[
         {
             "trigger": "advance",
             "source": "user",
-            "dest": "playing",
-            "conditions": "start"
+            "dest": "play",
+            "conditions": "is_going_to_play"
         },
         {
             "trigger": "advance",
-            "source": "playing",
-            "dest": "playing",
+            "source": "play",
+            "dest": "play",
             "conditions": "move"
         },
         {
             "trigger": "go_back",
-            "source": ["user", "init_game"],
+            "source": ["user", "play"],
             "dest": "user"
         }
     ],
@@ -92,18 +97,19 @@ def callback():
         if not isinstance(event.message.text, str):
             continue
         
+        txt = event.message.text.lower()
         print(f'\nFSM STATE: {machine.state}')
         # print(f'REQUEST BODY: \n{request.get_json()}')
         
         # general states
-        if event.message.text.lower() == 'fsm':
-            return send_image_message(event.reply_token, 'https://6d44374a6939.ngrok.io/show-fsm')
-        
+        if txt == 'fsm':
+            return send_image_message(event.reply_token, domain + '/show-fsm')
+
         response = machine.advance(event)
         if response == False:
             if machine.state == 'user':
                 send_text_message(event.reply_token, 'hi')
-            elif machine.state == 'init_game':
+            elif machine.state == 'play':
                 send_text_message(event.reply_token, '幹')
     return 'OK'
 
@@ -111,6 +117,38 @@ def callback():
 def show_fsm():
     machine.get_graph().draw('fsm.png', prog='dot', format='png')
     return send_file('fsm.png', mimetype='image/png')
+
+@app.route('/show-board/<stamp>', methods=['GET'])
+def show_board(stamp):
+    # open img
+    imageA = Image.open('sprites/board.png')
+    imageA = imageA.convert('RGBA')
+    widthA , heightA = imageA.size
+
+    #開啟簽名檔
+    imageB = Image.open('sprites/blackBishop.png')
+    imageB = imageB.convert('RGBA')
+    widthB , heightB = imageB.size
+
+    #新建一個透明的底圖
+    resultPicture = Image.new('RGBA', imageA.size, (0, 0, 0, 0))
+    #把照片貼到底圖
+    resultPicture.paste(imageA,(0,0))
+
+    #設定簽名檔的位置參數
+    offset = random.randint(0, 7) * 50
+    pos = (30 + offset, 30, 80 + offset, 80)
+
+    #為了背景保留透明度，將im參數與mask參數皆帶入重設過後的簽名檔圖片
+    resultPicture.paste(imageB, pos, imageB)
+
+    #儲存新的照片
+    
+    img_path = 'dump-file/' + stamp + '.png'
+    if not os.path.exists('dump-file'):
+        os.mkdir('dump-file')
+    resultPicture.save(img_path)
+    return send_file(img_path, mimetype='image/png')
 
 if __name__ == "__main__":
     http_port = int(os.environ.get("PORT", 8000))
