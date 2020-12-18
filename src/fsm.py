@@ -3,7 +3,8 @@ from linebot.models import ImageCarouselColumn, URITemplateAction, MessageTempla
 from utils import send_text_message, send_image_message
 from datetime import datetime
 
-domain = 'https://7a11edb09d53.ngrok.io'
+# domain = 'https://7a11edb09d53.ngrok.io'
+domain = 'https://lincc-linebot.herokuapp.com'
 
 class TocMachine(GraphMachine):
     def __init__(self, **machine_configs):
