@@ -120,13 +120,14 @@ def show_fsm():
 
 @app.route('/show-board/<stamp>', methods=['GET'])
 def show_board(stamp):
+    
     # open img
-    imageA = Image.open('sprites/board.png')
+    imageA = Image.open(os.getcwd() + '/sprites/board.png')
     imageA = imageA.convert('RGBA')
     widthA , heightA = imageA.size
 
     #開啟簽名檔
-    imageB = Image.open('sprites/blackBishop.png')
+    imageB = Image.open(os.getcwd() + '/sprites/blackBishop.png')
     imageB = imageB.convert('RGBA')
     widthB , heightB = imageB.size
 
@@ -144,9 +145,9 @@ def show_board(stamp):
 
     #儲存新的照片
     
-    img_path = '~/dump-file/' + stamp + '.png'
-    if not os.path.exists('~/dump-file'):
-        os.mkdir('~/dump-file')
+    img_path = os.getcwd() + '/dump-file/' + stamp + '.png'
+    if not os.path.exists(os.getcwd() + '/dump-file'):
+        os.mkdir(os.getcwd() + '/dump-file')
     resultPicture.save(img_path)
     return send_file(img_path, mimetype='image/png')
 
