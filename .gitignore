@@ -1,3 +1,4 @@
 ngrok.exe
 set_env.cmd
 set_env.sh
+.vscode/
