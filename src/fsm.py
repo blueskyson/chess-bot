@@ -6,7 +6,7 @@ import chess
 from chess import Game
 
 # domain = 'https://7a11edb09d53.ngrok.io'
-domain = 'https://a80b49743215.ngrok.io'
+domain = 'https://lincc-linebot.herokuapp.com'
 
 class TocMachine(GraphMachine):
     def __init__(self, **machine_configs):
