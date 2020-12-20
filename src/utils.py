@@ -42,3 +42,38 @@ def send_image_message(reply_token, url):
     )
     line_bot_api.reply_message(reply_token, message)
     return "OK"
+
+def send_text_and_image_message(reply_token, text, url):
+    line_bot_api = LineBotApi(channel_access_token)
+    txt_message = TextSendMessage(text=text)
+    img_message = ImageSendMessage(
+        original_content_url = url,
+        preview_image_url = url
+    )
+    line_bot_api.reply_message(reply_token, [txt_message, img_message])
+    return "OK"
+
+def push_text_message(user_id, text):
+    line_bot_api = LineBotApi(channel_access_token)
+    line_bot_api.push_message(user_id, TextSendMessage(text=text))
+    return "OK"
+
+def push_image_message(user_id, url):
+    line_bot_api = LineBotApi(channel_access_token)
+    message = ImageSendMessage(
+        original_content_url = url,
+        preview_image_url = url
+    )
+    line_bot_api.push_message(user_id, message)
+    return "OK"
+
+def push_2texts_and_image_massage(user_id, text1, text2, url):
+    line_bot_api = LineBotApi(channel_access_token)
+    txt_message1 = TextSendMessage(text=text1)
+    txt_message2 = TextSendMessage(text=text2)
+    img_message = ImageSendMessage(
+        original_content_url = url,
+        preview_image_url = url
+    )
+    line_bot_api.push_message(user_id, [txt_message1, txt_message2, img_message])
+    return "OK"
