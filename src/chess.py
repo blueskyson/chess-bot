@@ -1,6 +1,5 @@
 import os
 from PIL import Image
-from pgn_parser import pgn, parser
 
 # COLOR
 WHITE = 0
