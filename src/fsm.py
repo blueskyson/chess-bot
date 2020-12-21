@@ -2,21 +2,22 @@ from transitions.extensions import GraphMachine
 from linebot.models import ImageCarouselColumn, URITemplateAction, MessageTemplateAction
 from utils import send_text_message, send_image_message, push_text_message, push_image_message
 from datetime import datetime
-import chess
+import chess, board, ai, pieces
 from chess import Game
 
-# domain = 'https://7a11edb09d53.ngrok.io'
-domain = 'https://lincc-linebot.herokuapp.com'
+domain = 'https://fa0dfdc4a4ec.ngrok.io'
 
 class TocMachine(GraphMachine):
     def __init__(self, **machine_configs):
         self.game = Game()
+        self.board = None
         self.machine = GraphMachine(model=self, **machine_configs)
 
     def is_going_to_play(self, event):
         text = event.message.text.lower()
         if text == 'play':
             self.game.set_up_board()
+            self.board = board.Board.new()
             return True
         return False
 

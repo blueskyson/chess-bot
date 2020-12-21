@@ -208,8 +208,6 @@ class Game:
 
 
         return False
-    
-
 
     def test_pawn(self, src, dest):
         i1 = src[0]
