@@ -2,8 +2,8 @@ import board, ai
 
 class Piece():
 
-    WHITE = "W"
-    BLACK = "B"
+    WHITE = "0"
+    BLACK = "1"
 
     def __init__(self, x, y, color, piece_type, value):
         self.x = x
@@ -11,7 +11,7 @@ class Piece():
         self.color = color
         self.piece_type = piece_type
         self.value = value
-
+        self.move = 0
 
 
     # Returns all diagonal moves for this piece. This should therefore only
@@ -119,7 +119,7 @@ class Piece():
 
 class Rook(Piece):
 
-    PIECE_TYPE = "R"
+    PIECE_TYPE = "2"
     VALUE = 500
 
     def __init__(self, x, y, color):
@@ -134,7 +134,7 @@ class Rook(Piece):
 
 class Knight(Piece):
 
-    PIECE_TYPE = "N"
+    PIECE_TYPE = "3"
     VALUE = 320
 
     def __init__(self, x, y, color):
@@ -160,7 +160,7 @@ class Knight(Piece):
 
 class Bishop(Piece):
 
-    PIECE_TYPE = "B"
+    PIECE_TYPE = "4"
     VALUE = 330
 
     def __init__(self, x, y, color):
@@ -175,7 +175,7 @@ class Bishop(Piece):
 
 class Queen(Piece):
 
-    PIECE_TYPE = "Q"
+    PIECE_TYPE = "5"
     VALUE = 900
 
     def __init__(self, x, y, color):
@@ -192,7 +192,7 @@ class Queen(Piece):
 
 class King(Piece):
 
-    PIECE_TYPE = "K"
+    PIECE_TYPE = "6"
     VALUE = 20000
 
     def __init__(self, x, y, color):
@@ -250,10 +250,11 @@ class King(Piece):
 
 class Pawn(Piece):
 
-    PIECE_TYPE = "P"
+    PIECE_TYPE = "1"
     VALUE = 100
 
     def __init__(self, x, y, color):
+        self.en_passant = False
         super(Pawn, self).__init__(x, y, color, Pawn.PIECE_TYPE, Pawn.VALUE)
 
     def is_starting_position(self):
