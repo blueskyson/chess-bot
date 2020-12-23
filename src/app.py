@@ -38,6 +38,9 @@ if channel_secret is None:
 if channel_access_token is None:
     print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.')
     sys.exit(1)
+if domain is None:
+    print('Specify domain as environment variable.')
+    sys.exit(1)
 
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
@@ -158,7 +161,9 @@ def callback():
 def show_fsm(user_id):
     img_path = os.getcwd() + '/fsm.png'
     machine[user_id].get_graph().draw(img_path, prog='dot', format='png')
-    return send_file(img_path, mimetype='image/png')
+    if os.path.isfile(img_path):
+        return send_file(img_path, mimetype='image/png')
+    return send_file(os.getcwd() + '/notfound.png', mimetype='image/png')
 
 @app.route('/<user_id>/<stamp>', methods=['GET'])
 def show_board(user_id, stamp):
