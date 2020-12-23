@@ -2,6 +2,7 @@ import pieces, ai
 import os
 from PIL import Image
 import shutil
+
 # COLOR
 WHITE = pieces.Piece.WHITE
 BLACK = pieces.Piece.BLACK
@@ -31,7 +32,6 @@ class Board:
         self.chesspieces = chesspieces
         self.white_king_moved = white_king_moved
         self.black_king_moved = black_king_moved
-        self.round = 1
         self.status = WHITE
         self.pawn_double_move = None
 
@@ -43,6 +43,8 @@ class Board:
                 piece = chessboard.chesspieces[x][y]
                 if (piece != 0):
                     chesspieces[x][y] = piece.clone()
+                    chesspieces[x][y].move = piece.move
+                    chesspieces[x][y].en_passant = piece.en_passant
         return cls(chesspieces, chessboard.white_king_moved, chessboard.black_king_moved)
 
     @classmethod

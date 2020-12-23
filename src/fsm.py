@@ -12,6 +12,8 @@ class TocMachine(GraphMachine):
     def __init__(self, **machine_configs):
         self.board = None
         self.machine = GraphMachine(model=self, **machine_configs)
+        self.history = []
+        self.round = 1
 
     def is_going_to_resign(self, event):
         text = event.message.text.lower()
@@ -23,8 +25,34 @@ class TocMachine(GraphMachine):
         else:
             push_text_message(user_id, "White Win!")
         self.board.remove(user_id)
+        self.board = None
         return True
-        
+    
+    def undo(self, event):
+        text = event.message.text.lower()        
+        if text != 'undo':
+            return False
+
+        if len(self.history) < 2:
+            push_text_message(event.source.user_id, 'Could not undo.')
+            return True
+        self.history.pop()
+        self.board = self.history[len(self.history) - 1]
+        return True
+
+    def undo2(self, event):
+        text = event.message.text.lower()        
+        if text != 'undo':
+            return False
+        if len(self.history) < 2:
+            push_text_message(event.source.user_id, 'Could not undo.')
+            return True
+        self.history.pop()
+        self.history.pop()
+        self.board = self.history[len(self.history) - 1]
+        self.round -= 1
+        return True
+
     def is_going_to_move(self, event):
         text = event.message.text.lower()
         mv = self.board.is_legal_notation(text)
@@ -37,6 +65,7 @@ class TocMachine(GraphMachine):
             push_text_message(event.source.user_id, 'Illegal move.')
             return False
         self.board.user_perform_move(mv, stat)
+        self.history.append(board.Board.clone(self.board))
         return True
     
     def on_enter_botplayblack(self, event):
@@ -44,8 +73,8 @@ class TocMachine(GraphMachine):
         user_id = event.source.user_id
 
         self.board.draw(user_id, stamp)
-        board_info = 'Round ' + str(self.board.round) + ', black\'s turn.'
-        self.board.round += 1
+        board_info = 'Round ' + str(self.round) + ', black\'s turn.'
+        self.round += 1
 
         push_text_message(user_id, board_info)
         push_image_message(user_id, domain + '/' + user_id + '/' + stamp)
@@ -65,6 +94,7 @@ class TocMachine(GraphMachine):
         else:
             ai_move = ai.AI.get_ai_move(self.board, [], board.BLACK)
         self.board.perform_move(ai_move)
+        self.history.append(board.Board.clone(self.board))
         return True
     
     def is_going_to_userplaywhite(self, event):
@@ -72,6 +102,9 @@ class TocMachine(GraphMachine):
         if text == 'play' or text == 'play white':
             self.board = board.Board.new()
             self.board.status = board.WHITE
+            self.history = []
+            self.history.append(board.Board.clone(self.board))
+            self.round = 1
             return True
         return False
 
@@ -79,7 +112,7 @@ class TocMachine(GraphMachine):
         stamp = str(datetime.now().timestamp())
         user_id = event.source.user_id
         self.board.draw(user_id, stamp)
-        board_info = 'Round ' + str(self.board.round) + ', white\'s turn.'
+        board_info = 'Round ' + str(self.round) + ', white\'s turn.'
         push_text_message(user_id, board_info)
         push_image_message(user_id, domain + '/' + user_id + '/' + stamp)
         
@@ -96,10 +129,10 @@ class TocMachine(GraphMachine):
         stamp = str(datetime.now().timestamp())
         user_id = event.source.user_id
         self.board.draw(user_id, stamp)
-        board_info = 'Round ' + str(self.board.round) + ', black\'s turn.'
+        board_info = 'Round ' + str(self.round) + ', black\'s turn.'
         push_text_message(user_id, board_info)
         push_image_message(user_id, domain + '/' + user_id + '/' + stamp)
-        self.board.round += 1
+        self.round += 1
             
         if self.board.is_win(pieces.Piece.WHITE):
             push_text_message(user_id, 'White win!')
@@ -114,6 +147,9 @@ class TocMachine(GraphMachine):
         if text == 'play black':
             self.board = board.Board.new()
             self.board.status = board.BLACK
+            self.history = []
+            self.history.append(board.Board.clone(self.board))
+            self.round = 1
             return True
         return False
 
@@ -121,7 +157,7 @@ class TocMachine(GraphMachine):
         stamp = str(datetime.now().timestamp())
         user_id = event.source.user_id
         self.board.draw(user_id, stamp)
-        board_info = 'Round ' + str(self.board.round) + ', white\'s turn.'
+        board_info = 'Round ' + str(self.round) + ', white\'s turn.'
         push_text_message(user_id, board_info)
         push_image_message(user_id, domain + '/' + user_id + '/' + stamp)
         
@@ -138,7 +174,9 @@ class TocMachine(GraphMachine):
         text = event.message.text.lower()
         if text == 'play self':
             self.board = board.Board.new()
-            self.board.status = board.BLACK
+            self.history = []
+            self.history.append(board.Board.clone(self.board))
+            self.round = 1
             return True
         return False
     
@@ -146,12 +184,11 @@ class TocMachine(GraphMachine):
         stamp = str(datetime.now().timestamp())
         user_id = event.source.user_id
         self.board.draw(user_id, stamp)
-        if self.board.status == board.BLACK:
-            print('hi')
-            board_info = 'Round ' + str(self.board.round) + ', white\'s turn.'
+        self.round = int(len(self.history) / 2) + 1
+        if len(self.history) % 2 == 1:
+            board_info = 'Round ' + str(self.round) + ', white\'s turn.'
             push_text_message(user_id, board_info)
             push_image_message(user_id, domain + '/' + user_id + '/' + stamp)
-            self.board.status = board.WHITE
             
             if self.board.is_win(pieces.Piece.BLACK):
                 push_text_message(user_id, 'BLACK win!')
@@ -160,12 +197,10 @@ class TocMachine(GraphMachine):
                 return
             if self.board.is_check(pieces.Piece.WHITE):
                 push_text_message(user_id, 'Check!')           
-        elif self.board.status == board.WHITE:
-            board_info = 'Round ' + str(self.board.round) + ', black\'s turn.'
-            self.board.round += 1
+        else:
+            board_info = 'Round ' + str(self.round) + ', black\'s turn.'
             push_text_message(user_id, board_info)
             push_image_message(user_id, domain + '/' + user_id + '/' + stamp)
-            self.board.status = board.BLACK
             
             if self.board.is_win(pieces.Piece.WHITE):
                 push_text_message(user_id, 'White win!')
@@ -189,4 +224,6 @@ class TocMachine(GraphMachine):
             push_text_message(event.source.user_id, 'Illegal move.')
             return False
         self.board.user_perform_move(mv, stat)
+        self.history.append(board.Board.clone(self.board))
         return True
+        

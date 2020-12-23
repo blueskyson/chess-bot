@@ -1,6 +1,7 @@
 # Chessbot
 Play chess with a line message bot! Inspired by [fbchess](https://www.facebook.com/fbchess/).
-![](https://raw.githubusercontent.com/blueskyson/line-bot/master/images/1.png =200x)
+
+<img src="images/1.png" width="350">
 
 ## FSM
 
@@ -43,4 +44,5 @@ use "[heroku app url]/callback" as **webhook settings** on your line bot messagi
 
 Type "help" to in chat room will show commands.
 
-![](https://raw.githubusercontent.com/blueskyson/line-bot/master/images/2.png)
+<img src="images/2.png" width="350">
+

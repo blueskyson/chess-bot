@@ -30,8 +30,9 @@ HELP = '- Show this information: help\n'\
        'Pawns are promoted to queen by default, or you can use e7e8=r to promote to rook. There are b (bishop), n (knight), r (rook), q (queen) choices\n'\
        '- Request undo of last move: undo\n'\
        '- Resign: resign\n'\
-       '- Show all game PGNs: pgns'
+       '- Show current state: fsm'\
 
+# '- Show all game PGNs: pgns\n'\
 if channel_secret is None:
     print('Specify LINE_CHANNEL_SECRET as environment variable.')
     sys.exit(1)
@@ -88,6 +89,24 @@ def callback():
                     {
                         "trigger": "advance",
                         "source": "userplaywhite",
+                        "dest": "userplaywhite",
+                        "conditions": "undo2"
+                    },
+                    {
+                        "trigger": "advance",
+                        "source": "userplayblack",
+                        "dest": "userplayblack",
+                        "conditions": "undo2"
+                    },
+                    {
+                        "trigger": "advance",
+                        "source": "userplayself",
+                        "dest": "userplayself",
+                        "conditions": "undo"
+                    },
+                    {
+                        "trigger": "advance",
+                        "source": "userplaywhite",
                         "dest": "botplayblack",
                         "conditions": "is_going_to_move"                        
                     },
@@ -125,7 +144,7 @@ def callback():
                         "trigger": "go_back",
                         "source": ["user", "botplayblack", "userplaywhite", "userplayblack", "botplaywhite", "userplayself"],
                         "dest": "user"
-                    }
+                    },
                 ],
                 initial="user",
                 auto_transitions=False,

@@ -12,7 +12,7 @@ class Piece():
         self.piece_type = piece_type
         self.value = value
         self.move = 0
-
+        self.en_passant = False
 
     # Returns all diagonal moves for this piece. This should therefore only
     # be used by the Bishop and Queen since they are the only pieces that can
@@ -254,7 +254,6 @@ class Pawn(Piece):
     VALUE = 100
 
     def __init__(self, x, y, color):
-        self.en_passant = False
         super(Pawn, self).__init__(x, y, color, Pawn.PIECE_TYPE, Pawn.VALUE)
 
     def is_starting_position(self):
