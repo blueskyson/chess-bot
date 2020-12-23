@@ -179,7 +179,7 @@ def callback():
 @app.route('/show-fsm/<user_id>', methods=['GET'])
 def show_fsm(user_id):
     img_path = os.getcwd() + '/fsm.png'
-    machine[user_id].get_graph().draw(img_path, prog='dot', format='png')
+    machine[user_id].get_graph().draw(img_path)
     if os.path.isfile(img_path):
         return send_file(img_path, mimetype='image/png')
     return send_file(os.getcwd() + '/notfound.png', mimetype='image/png')
