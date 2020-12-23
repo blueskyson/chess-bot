@@ -178,11 +178,11 @@ def callback():
 
 @app.route('/show-fsm/<user_id>', methods=['GET'])
 def show_fsm(user_id):
-    img_path = os.getcwd() + '/fsm.png'
-    machine[user_id].get_graph().draw(img_path)
+    img_path = 'fsm.png'
+    machine[user_id].get_graph().draw(img_path, prog='dot', format='png')
     if os.path.isfile(img_path):
         return send_file(img_path, mimetype='image/png')
-    return send_file(os.getcwd() + '/notfound.png', mimetype='image/png')
+    return send_file('notfound.png', mimetype='image/png')
 
 @app.route('/<user_id>/<stamp>', methods=['GET'])
 def show_board(user_id, stamp):
