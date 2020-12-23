@@ -1,6 +1,6 @@
 # Chessbot
 Play chess with a line message bot! Inspired by [fbchess](https://www.facebook.com/fbchess/).
-![](https://raw.githubusercontent.com/blueskyson/line-bot/master/images/1.png)
+![](https://raw.githubusercontent.com/blueskyson/line-bot/master/images/1.png )
 
 ## FSM
 
