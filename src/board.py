@@ -155,7 +155,7 @@ class Board:
             self.pawn_double_move = None
         
         if self.pawn_double_move != None:
-            self.chesspieces[self.pawn_double_move.x][self.pawn_double_move.y].en_passant = False
+            self.pawn_double_move.en_passant = False
             self.pawn_double_move = None
 
         if status == PROMOTION:
@@ -172,7 +172,7 @@ class Board:
 
         if status == PAWN_DOBULE_MOVE:
             piece.en_passant = True
-            self.pawn_double_move = piece
+            self.pawn_double_move = self.chesspieces[move.xfrom][move.yfrom]
         elif status == EN_PASSANT:
             self.chesspieces[move.xto][move.yfrom] = 0
         self.chesspieces[move.xto][move.yto] = piece
