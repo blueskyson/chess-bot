@@ -8,10 +8,10 @@ line-bot-sdk = "1.14.0"
 flask = "1.0.2"
 python-dotenv = "0.10.3"
 transitions = "0.6.9"
-pygraphviz = "1.5"
+pygraphviz = "*"
 Pillow = "8.0.1"
 numpy = "1.17.4"
 [dev-packages]
 
 [requires]
-python_version = "3.6.7"
+python_version = "3.6"
