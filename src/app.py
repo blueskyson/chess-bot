@@ -39,7 +39,7 @@ HELP = '- Show this information: help\n'\
        '- Create game as white: play 2p\n'\
        '- Create game as black: play 2p black\n'\
        '- Cancel created game: cancel\n'\
-       '- Accept game: play accept\n'\
+       '- Accept game: accept\n'\
        '- Undo: undo - Reply undo: y/n'
 
 # '- Show all game PGNs: pgns\n'\
@@ -163,7 +163,7 @@ def callback():
             )
         elif event.source.type == 'room' and event.source.room_id not in roommachine:
             roommachine[event.source.room_id] = RoomTocMachine(
-                states=["user", "userplaywhite", "botplaywhite", "userplayblack", "botplayblack", "userplayself", "creategame", "2pplay", "2pundo"],
+                states=["user", "userplaywhite", "botplaywhite", "userplayblack", "botplayblack", "userplayself", "creategame", "2pplay", "requestundo"],
                 transitions=[
                     {
                         "trigger": "advance",
@@ -179,7 +179,7 @@ def callback():
                     },
                     {
                         "trigger": "advance",
-                        "source": ["userplaywhite", "userplayblack", "userplayself", "2pplay"],
+                        "source": ["userplaywhite", "userplayblack", "userplayself"],
                         "dest": "user",
                         "conditions": "is_going_to_resign"
                     },
@@ -252,6 +252,18 @@ def callback():
                     {
                         "trigger": "advance",
                         "source": "2pplay",
+                        "dest": "user",
+                        "conditions": "is_going_to_2presign"                        
+                    },
+                    {
+                        "trigger": "advance",
+                        "source": "2pplay",
+                        "dest": "requestundo",
+                        "conditions": "is_going_to_requestundo"                        
+                    },
+                    {
+                        "trigger": "advance",
+                        "source": "2pplay",
                         "dest": "2pplay",
                         "conditions": "is_going_to_2pmove"                        
                     },
@@ -260,12 +272,6 @@ def callback():
                         "source": "creategame",
                         "dest": "user",
                         "conditions": "is_going_to_cancel"
-                    },
-                    {
-                        "trigger": "advance",
-                        "source": "2pplay",
-                        "dest": "requestundo",
-                        "conditions": "is_going_to_requestundo"                        
                     },
                     {
                         "trigger": "advance",

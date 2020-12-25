@@ -16,9 +16,12 @@ class RoomTocMachine(GraphMachine):
         self.user2 = None
         self.undouser = None
 
-    def on_enter_user():
+    def on_enter_user(self, event):
         self.user1 = None
         self.user2 = None
+        self.board = None
+        self.history = []
+        self.undouser = None
 
     def is_going_to_userplaywhite(self, event):
         text = event.message.text.lower()
@@ -266,7 +269,7 @@ class RoomTocMachine(GraphMachine):
 
     def is_going_to_2pplay(self, event):
         text = event.message.text.lower()
-        if text == 'play accept':
+        if text == 'accept':
             if self.user2 == None:
                 self.user2 = event.source.user_id
             else:
@@ -360,4 +363,17 @@ class RoomTocMachine(GraphMachine):
         if text == 'n' or text == 'y':
             push_text_message(event.source.room_id, 'Only players can reply undo.')
         return False
-        
+    
+    def is_going_to_2presign(self, event):
+        text = event.message.text.lower()
+        room_id = event.source.room_id
+        if text == 'resign':
+            if event.source.user_id == self.user1:
+                push_text_message(room_id, "Black Win!")
+                self.board.remove(room_id)
+                return True
+            elif event.source.user_id == self.user2:
+                push_text_message(room_id, "White Win!")
+                self.board.remove(room_id)
+                return True
+        return False
