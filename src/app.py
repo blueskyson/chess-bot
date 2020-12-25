@@ -329,16 +329,16 @@ def callback():
 
 @app.route('/show-fsm/<user_id>', methods=['GET'])
 def show_fsm(user_id):
-    img_path = os.getcwd() + '/fsm.png'
-    machine[user_id].get_graph().draw(img_path, prog='dot', format='png')
+    img_path = os.getcwd() + '/images/fsm.png'
+    #machine[user_id].get_graph().draw(img_path, prog='dot', format='png')
     if os.path.isfile(img_path):
         return send_file(img_path, mimetype='image/png')
     return send_file(os.getcwd() + '/notfound.png', mimetype='image/png')
 
 @app.route('/show-roomfsm/<room_id>', methods=['GET'])
 def show_roomfsm(room_id):
-    img_path = os.getcwd() + '/fsm.png'
-    roommachine[room_id].get_graph().draw(img_path, prog='dot', format='png')
+    img_path = os.getcwd() + '/images/roomfsm.png'
+    #roommachine[room_id].get_graph().draw(img_path, prog='dot', format='png')
     if os.path.isfile(img_path):
         return send_file(img_path, mimetype='image/png')
     return send_file(os.getcwd() + '/notfound.png', mimetype='image/png')
