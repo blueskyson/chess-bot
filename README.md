@@ -90,4 +90,7 @@ use "[heroku app url]/callback" as **webhook settings** on your line bot messagi
 
 <img src="images/undo.png" width="350">
 
+#### Notice: All the chess board pictures are removed from server in the end of a game.
+
 ## Credit [ChessAI](https://github.com/Dirk94/ChessAI)
+
